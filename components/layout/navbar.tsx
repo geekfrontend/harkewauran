@@ -8,8 +8,7 @@ import {
   PencilIcon,
   UserCircleIcon,
 } from "lucide-react";
-import Link from "next/link";
-import { useLocale } from "next-intl";
+import { Link } from "@/i18n/routing";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
 export const HEADER_LINKS = [
@@ -29,7 +28,6 @@ export const HEADER_LINKS = [
 ] as const;
 
 const Navbar = () => {
-  const locale = useLocale();
   const [activeKey, setActiveKey] = useLocalStorage<string>("activeMenu", "");
 
   const handleClick = (key: string) => {
@@ -40,7 +38,6 @@ const Navbar = () => {
     <nav>
       <ul className="hidden gap-2 md:flex">
         {HEADER_LINKS.map((link) => {
-          const localizedHref = `/${locale}${link.href}`;
           const isActive = activeKey === link.key;
 
           return (
@@ -57,7 +54,7 @@ const Navbar = () => {
                       isActive,
                   }
                 )}
-                href={localizedHref}
+                href={link.href}
                 onClick={() => handleClick(link.key)}
               >
                 {link.key}

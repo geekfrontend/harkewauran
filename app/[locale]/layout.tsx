@@ -11,25 +11,26 @@ export const metadata = {
     "Explore the portfolio of Yohanes Harke Wauran, showcasing web development skills, creative projects, and professional experience in building innovative digital solutions.",
 };
 
+interface RootLayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}
+
 export default async function RootLayout({
   children,
-  params: { locale },
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
-  // Ensure that the incoming `locale` is valid
+  params,
+}: RootLayoutProps) {
+  const { locale } = await params;
+
   if (!routing.locales.includes(locale as any)) {
     notFound();
   }
 
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages();
+  const messages = await getMessages({ locale }).catch(() => notFound());
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className="relative" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"

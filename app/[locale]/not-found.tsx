@@ -7,7 +7,7 @@ const NotFoundPage = () => {
             404
           </div>
           <div className="ml-4 text-lg tracking-wider text-gray-500 uppercase">
-            Halaman tidak ditemukan.
+            Page Not Found.
           </div>
         </div>
       </div>
