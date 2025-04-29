@@ -1,76 +1,93 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import {
-  HomeIcon,
-  FlameIcon,
-  MonitorIcon,
-  PencilIcon,
-  UserCircleIcon,
-} from "lucide-react";
-import { Link } from "@/i18n/routing";
-import useLocalStorage from "@/hooks/useLocalStorage";
+  MobileNav,
+  MobileNavHeader,
+  MobileNavMenu,
+  MobileNavToggle,
+  Navbar,
+  NavbarButton,
+  NavbarLogo,
+  NavBody,
+  NavItems,
+} from "@/components/aceternityui/navbar";
+import { useState } from "react";
+import ThemeSwitcher from "../common/theme-switcher";
+import { link } from "fs";
 
-export const HEADER_LINKS = [
-  { icon: <HomeIcon className="size-3.5" />, href: "/", key: "Home" },
-  { icon: <PencilIcon className="size-3.5" />, href: "/blog", key: "Blog" },
+const navItems = [
   {
-    icon: <FlameIcon className="size-3.5" />,
-    href: "/projects",
-    key: "Projects",
+    name: "Home",
+    link: "#home",
   },
   {
-    icon: <UserCircleIcon className="size-3.5" />,
-    href: "/about",
-    key: "About",
+    name: "Blog",
+    link: "#blog",
   },
-  { icon: <MonitorIcon className="size-3.5" />, href: "/uses", key: "Uses" },
-] as const;
+  {
+    name: "Projects",
+    link: "#projects",
+  },
+  {
+    name: "About Me",
+    link: "#aboutMe",
+  },
+];
 
-const Navbar = () => {
-  const [activeKey, setActiveKey] = useLocalStorage<string>("activeMenu", "");
-
-  const handleClick = (key: string) => {
-    setActiveKey(key);
-  };
-
+const NavbarComponent = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   return (
-    <nav>
-      <ul className="hidden gap-2 md:flex">
-        {HEADER_LINKS.map((link) => {
-          const isActive = activeKey === link.key;
+    <>
+      <Navbar>
+        {/* Desktop Navigation */}
+        <NavBody>
+          <NavbarLogo />
+          <NavItems items={navItems} />
+          <div className="flex items-center gap-4">
+            {/* <NavbarButton variant="primary">Contact Me</NavbarButton> */}
+            <ThemeSwitcher />
+          </div>
+        </NavBody>
 
-          return (
-            <li
-              key={link.key}
-              className="relative flex h-[60px] items-center justify-center"
-            >
-              <Link
-                className={cn(
-                  "rounded px-3 py-2 text-sm font-medium transition-colors",
-                  {
-                    ["text-muted-foreground hover:text-foreground"]: !isActive,
-                    ["text-neutral-600 dark:text-foreground font-medium"]:
-                      isActive,
-                  }
-                )}
-                href={link.href}
-                onClick={() => handleClick(link.key)}
+        {/* Mobile Navigation */}
+        <MobileNav>
+          <MobileNavHeader>
+            <NavbarLogo />
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </MobileNavHeader>
+
+          <MobileNavMenu
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          >
+            {navItems.map((item, idx) => (
+              <a
+                key={`mobile-link-${idx}`}
+                href={item.link}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="relative text-neutral-600 dark:text-neutral-300"
               >
-                {link.key}
-              </Link>
-              {isActive && (
-                <>
-                  <div className="absolute bottom-0 w-12 h-px z-40 -translate-x-1/2 bg-nav-link-indicator dark:bg-nav-link-indicator-dark left-1/2" />
-                  <div className="absolute bottom-0 left-1/2 z-40 size-2.5 -translate-x-1/2 rounded-[4px] bg-neutral-100  blur dark:bg-neutral-800 " />
-                </>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+                <span className="block">{item.name}</span>
+              </a>
+            ))}
+            <div className="flex w-full flex-col gap-4">
+              {/* <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                Contact Me
+              </NavbarButton> */}
+              <ThemeSwitcher />
+            </div>
+          </MobileNavMenu>
+        </MobileNav>
+      </Navbar>
+    </>
   );
 };
 
-export default Navbar;
+export default NavbarComponent;

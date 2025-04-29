@@ -1,5 +1,4 @@
-import { Spotlight } from "@/components/customs/spotlight";
-import Header from "@/components/layout/public/header";
+import NavbarComponent from "@/components/layout/navbar";
 
 export default async function RootLayout({
   children,
@@ -8,14 +7,9 @@ export default async function RootLayout({
 }) {
   return (
     <>
-      <div className="relative">
-        <div className="absolute -z-40 flex size-full min-h-screen items-center justify-center overflow-hidden rounded-lg bg-background p-20">
-          <Spotlight />
-        </div>
-        <Header />
-        <main id="skipMain" className="max-w-5xl px-4 mx-auto mb-16 sm:px-8">
-          {children}
-        </main>
+      <div className="relative w-full antialiased">
+        <NavbarComponent />
+        {children}
       </div>
     </>
   );

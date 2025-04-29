@@ -1,59 +1,35 @@
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
+"use client";
+
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-const ThemeSwitcher = () => {
-  const { setTheme } = useTheme();
+import { Button } from "@/components/ui/button";
+
+export default function ThemeSwitcher() {
+  const { setTheme, theme } = useTheme();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="size-9 p-0"
-          data-testid="theme-toggle"
-        >
-          <SunIcon className="size-4 dark:hidden" />
-          <MoonIcon className="hidden size-4 dark:block" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="mt-3">
-        <DropdownMenuItem
-          className="gap-2"
-          onClick={() => {
-            setTheme("light");
-          }}
-          data-testid="theme-light-button"
-        >
-          <SunIcon className="size-[18px]" /> Light
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="gap-2"
-          onClick={() => {
-            setTheme("dark");
-          }}
-          data-testid="theme-dark-button"
-        >
-          <MoonIcon className="size-[18px]" /> Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="gap-2"
-          onClick={() => {
-            setTheme("system");
-          }}
-          data-testid="theme-system-button"
-        >
-          <MonitorIcon className="size-[18px]" /> System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
+    <div className="border rounded-full z-30 w-max">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="hover:bg-transparent"
+        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      >
+        <Sun />
 
-export default ThemeSwitcher;
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+
+      <Button
+        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+        variant="ghost"
+        size="icon"
+        className="hover:bg-transparent dark:bg-zinc-800 rounded-full w-8 h-7 mr-1"
+      >
+        <Moon />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    </div>
+  );
+}

@@ -27,7 +27,7 @@ const PageTitle = (props: PageTitleProps) => {
 
   return (
     <>
-      <div className="mt-6 sm:mt-12 ">
+      <div className="mt-6 sm:mt-12">
         <motion.h1
           className="my-4 text-4xl font-bold md:text-5xl"
           {...(animate && {
