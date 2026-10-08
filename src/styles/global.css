@@ -6,6 +6,7 @@
 
 @import "tailwindcss";
 @import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -97,7 +98,7 @@
 /* ------------------------------------------------------------------ */
 @theme inline {
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "SFMono-Regular", monospace;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", monospace;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -147,6 +148,11 @@
   }
   ::selection {
     background: color-mix(in srgb, var(--brand) 30%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 }
 
@@ -231,6 +237,111 @@
   .locale-switcher .pip {
     @apply text-pip;
   }
+
+  /* section label: SIDE PROJECTS, TIMELINE */
+  .site-label {
+    @apply text-[13px] leading-normal tracking-[0.2em] text-muted-foreground uppercase;
+  }
+
+  /* dated / keyed list rows (notes, timeline, stack) */
+  .site-date {
+    @apply shrink-0 text-[13px] leading-7 text-muted-foreground tabular-nums;
+  }
+
+  /* notes list row: the title gets the link wipe when the row is hovered */
+  .note-row .note-title {
+    @apply relative self-start text-foreground;
+  }
+
+  /* "← notes" */
+  .back-link {
+    @apply text-[13px] leading-6 text-muted-foreground transition-colors hover:text-foreground;
+  }
+
+  /* "On this page" card */
+  .toc {
+    @apply flex w-[280px] flex-col items-start gap-3.5 rounded-xl border border-border bg-card px-7 pt-6 pb-7;
+  }
+  .toc-title {
+    @apply text-[15px] leading-[23px] font-semibold text-foreground;
+  }
+  .toc a {
+    @apply border-b border-transparent pb-px text-sm leading-[21px] text-soft transition-colors hover:text-foreground;
+  }
+  .toc a[aria-current="true"] {
+    @apply border-foreground text-foreground;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Note prose (Markdown)                                               */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .prose-note {
+    @apply text-base leading-7 text-body;
+  }
+  .prose-note > * + * {
+    @apply mt-5;
+  }
+  .prose-note h2 {
+    @apply mt-10 scroll-mt-10 text-lg leading-[27px] font-semibold tracking-[-0.2px] text-foreground;
+  }
+  .prose-note h3 {
+    @apply mt-8 scroll-mt-10 text-base font-semibold text-foreground;
+  }
+  .prose-note strong {
+    @apply font-semibold text-foreground;
+  }
+  .prose-note a {
+    @apply text-foreground underline decoration-underline decoration-1 underline-offset-4 transition-colors hover:decoration-foreground;
+  }
+  .prose-note ul {
+    @apply flex flex-col gap-1.5 pl-2;
+  }
+  .prose-note ul > li {
+    @apply relative pl-[18px];
+  }
+  .prose-note ul > li::before {
+    content: "";
+    @apply absolute top-3 left-0 size-1 rounded-full bg-muted-foreground;
+  }
+  .prose-note ol {
+    @apply flex list-none flex-col gap-1.5 pl-2 [counter-reset:item];
+  }
+  .prose-note ol > li {
+    @apply relative pl-8 [counter-increment:item];
+  }
+  .prose-note ol > li::before {
+    content: counter(item) ".";
+    @apply absolute left-0 font-mono text-[13px] text-muted-foreground;
+  }
+  .prose-note blockquote {
+    @apply border-l-2 border-pip pl-5 text-foreground italic;
+  }
+  .prose-note :not(pre) > code {
+    @apply rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground;
+  }
+  .prose-note hr {
+    @apply my-10 border-border;
+  }
+  .prose-note kbd {
+    @apply rounded border border-b-2 border-border-strong bg-secondary px-1.5 py-0.5 font-mono text-xs text-foreground;
+  }
+
+  /* code blocks stay dark in both themes */
+  .code-block {
+    @apply overflow-hidden rounded-lg border border-code-border bg-code;
+  }
+  .code-block figcaption {
+    @apply border-b border-code-border px-4 py-2.5 font-mono text-xs leading-normal text-muted-foreground;
+  }
+  .code-block pre {
+    @apply overflow-x-auto px-5 py-4 font-mono text-sm leading-[25px];
+    background-color: transparent !important;
+  }
+  .code-block .highlighted-word {
+    color: var(--brand) !important;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -252,7 +363,8 @@
    */
   .site-link::after,
   .site-nav a::after,
-  .locale-switcher a::after {
+  .locale-switcher a::after,
+  .note-row .note-title::after {
     content: "";
     @apply absolute inset-x-0 bottom-0 h-px bg-foreground;
     transform: scaleX(0);
@@ -269,7 +381,8 @@
   @media (hover: hover) and (pointer: fine) {
     .site-link:hover::after,
     .site-nav a:hover::after,
-    .locale-switcher a:hover::after {
+    .locale-switcher a:hover::after,
+    .note-row:hover .note-title::after {
       transform: scaleX(1);
       transform-origin: left;
       transition-duration: 250ms;
@@ -277,7 +390,8 @@
   }
   .site-link:focus-visible::after,
   .site-nav a:focus-visible::after,
-  .locale-switcher a:focus-visible::after {
+  .locale-switcher a:focus-visible::after,
+  .note-row:focus-visible .note-title::after {
     transform: scaleX(1);
     transform-origin: left;
   }
@@ -321,7 +435,8 @@
     /* keep the hover cue, drop the movement */
     .site-link::after,
     .site-nav a::after,
-    .locale-switcher a::after {
+    .locale-switcher a::after,
+    .note-row .note-title::after {
       transform: scaleX(1);
       opacity: 0;
       transition: opacity 150ms ease;
@@ -329,6 +444,8 @@
     .site-link:hover::after,
     .site-nav a:hover::after,
     .locale-switcher a:hover::after,
+    .note-row:hover .note-title::after,
+    .note-row:focus-visible .note-title::after,
     .site-link:focus-visible::after,
     .site-nav a:focus-visible::after,
     .locale-switcher a:focus-visible::after {

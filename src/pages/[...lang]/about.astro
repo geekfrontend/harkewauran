@@ -1,0 +1,45 @@
+---
+import PageLayout from "@/layouts/PageLayout.astro";
+import Section from "@/components/Section.astro";
+import { elsewhere, stack } from "@/data/about";
+import { getLangFromUrl, getLangStaticPaths, useTranslations } from "@/i18n/utils";
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<PageLayout title={`${t("about.title")} · harke.dev`} description={t("about.p1")} footerEnter={4}>
+  <h1 data-enter style="--i: 0" class="font-medium text-foreground">{t("about.title")}</h1>
+  <div data-enter style="--i: 1" class="flex flex-col gap-3 pt-4">
+    <p>{t("about.p1")}</p>
+    <p>{t("about.p2")}</p>
+  </div>
+
+  <Section label={t("about.stack")} enter={2}>
+    {
+      stack.map((s) => (
+        <div class="flex">
+          <p class="site-date w-30">{s.key[lang]}</p>
+          <p>{s.value}</p>
+        </div>
+      ))
+    }
+  </Section>
+
+  <Section label={t("about.elsewhere")} enter={3}>
+    {
+      elsewhere.map((e) => (
+        <div class="flex">
+          <p class="site-date w-30">{e.key}</p>
+          <div>
+            <a class="site-link" href={e.href} {...(e.href.startsWith("http") ? { target: "_blank", rel: "me noopener" } : {})}>
+              {e.label}
+            </a>
+          </div>
+        </div>
+      ))
+    }
+  </Section>
+</PageLayout>

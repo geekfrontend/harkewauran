@@ -3,23 +3,35 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { site } from "@/config/site";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
+interface Props {
+  /** Include the "home" link (inner pages' footer nav). */
+  home?: boolean;
+  class?: string;
+}
+
+const { home = false, class: className } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const items = [
+  ...(home ? [{ label: t("nav.home"), href: getRelativeLocaleUrl(lang) }] : []),
   { label: t("nav.notes"), href: getRelativeLocaleUrl(lang, "notes") },
   { label: t("nav.work"), href: getRelativeLocaleUrl(lang, "work") },
   { label: t("nav.about"), href: getRelativeLocaleUrl(lang, "about") },
   { label: t("nav.email"), href: `mailto:${site.email}` },
 ];
+
+const current = Astro.url.pathname.replace(/\/?$/, "/");
 ---
 
-<nav aria-label={t("nav.label")} class="site-nav">
+<nav aria-label={t("nav.label")} class:list={["site-nav", className]}>
   {
     items.map((item, i) => (
       <>
         {i > 0 && <span class="pip" aria-hidden="true">·</span>}
-        <a href={item.href}>{item.label}</a>
+        <a href={item.href} aria-current={item.href === current ? "page" : undefined}>
+          {item.label}
+        </a>
       </>
     ))
   }

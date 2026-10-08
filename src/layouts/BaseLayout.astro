@@ -108,6 +108,7 @@ const ogImage = new URL("/og-image.png", Astro.site);
         apply();
       })();
     </script>
+    <slot name="head" />
   </head>
   <body>
     <slot />

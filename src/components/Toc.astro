@@ -1,0 +1,45 @@
+---
+import type { MarkdownHeading } from "astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const t = useTranslations(getLangFromUrl(Astro.url));
+const items = [
+  { slug: "introduction", text: t("notes.introduction") },
+  ...Astro.props.headings.filter((h) => h.depth === 2),
+];
+---
+
+<nav class="toc" aria-labelledby="toc-title">
+  <p id="toc-title" class="toc-title">{t("notes.toc")}</p>
+  {
+    items.map((h, i) => (
+      <a href={`#${h.slug}`} data-toc={h.slug} aria-current={i === 0 ? "true" : undefined}>
+        {h.text}
+      </a>
+    ))
+  }
+</nav>
+
+<script>
+  // Scrollspy: the active item is the last section whose top has passed 30% of the viewport.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc]")];
+  const targets = links.map((l) => document.getElementById(l.dataset.toc!));
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    let active = 0;
+    targets.forEach((t, i) => {
+      if (t && t.getBoundingClientRect().top < innerHeight * 0.3) active = i;
+    });
+    links.forEach((l, i) => {
+      if (i === active) l.setAttribute("aria-current", "true");
+      else l.removeAttribute("aria-current");
+    });
+  };
+  addEventListener("scroll", () => (frame ||= requestAnimationFrame(update)), { passive: true });
+  update();
+</script>

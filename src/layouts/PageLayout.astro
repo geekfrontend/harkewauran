@@ -1,0 +1,27 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** "article" keeps a fixed 120px gap above the footer instead of pinning it to the bottom. */
+  variant?: "page" | "article";
+  /** Stagger position of the footer (after the page's own sections). */
+  footerEnter?: number;
+}
+
+const { title, description, variant = "page", footerEnter = 0 } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class:list={["site-container", variant === "article" && "sm:pb-16"]}>
+    <main class="flex flex-col">
+      <slot />
+    </main>
+    <SiteFooter
+      enter={footerEnter}
+      class={variant === "article" ? "pt-[120px]" : "mt-auto pt-20"}
+    />
+  </div>
+</BaseLayout>

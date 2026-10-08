@@ -1,0 +1,25 @@
+---
+import SiteNav from "./SiteNav.astro";
+import Preferences from "./Preferences.astro";
+
+interface Props {
+  class?: string;
+  /** Position in the page entrance stagger. */
+  enter?: number;
+}
+
+const { class: className, enter = 0 } = Astro.props;
+---
+
+<footer
+  data-enter
+  style={`--i: ${enter}`}
+  class:list={[
+    "flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between",
+    className,
+  ]}
+>
+  <!-- five items + pips must fit 342px on mobile -->
+  <SiteNav home class="gap-x-3.5 sm:gap-x-5" />
+  <Preferences />
+</footer>

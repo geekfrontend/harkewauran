@@ -1,0 +1,33 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import PageLayout from "@/layouts/PageLayout.astro";
+import { formatDate, getNotes } from "@/lib/notes";
+import { getLangFromUrl, getLangStaticPaths, useTranslations } from "@/i18n/utils";
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const notes = await getNotes();
+---
+
+<PageLayout title={`${t("notes.title")} · harke.dev`} description={t("notes.intro")} footerEnter={3}>
+  <h1 data-enter style="--i: 0" class="font-medium text-foreground">{t("notes.title")}</h1>
+  <p data-enter style="--i: 1" class="pt-4">{t("notes.intro")}</p>
+
+  <ul data-enter style="--i: 2" class="flex flex-col gap-2 pt-14">
+    {
+      notes.map((note) => (
+        <li>
+          <a class="note-row flex" href={getRelativeLocaleUrl(lang, `notes/${note.id}`)}>
+            <time class="site-date w-26" datetime={note.data.date.toISOString().slice(0, 10)}>
+              {formatDate(note.data.date)}
+            </time>
+            <span class="note-title">{note.data.title}</span>
+          </a>
+        </li>
+      ))
+    }
+    {notes.length === 0 && <li class="text-muted-foreground">{t("notes.empty")}</li>}
+  </ul>
+</PageLayout>

@@ -1,0 +1,83 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Identity from "./Identity.astro";
+import ThemeSwitcher from "./ThemeSwitcher.astro";
+import { languages, type Lang } from "@/i18n/ui";
+import { errorLabels, getErrorCopy } from "@/i18n/errors";
+
+interface Props {
+  status: number;
+}
+
+const { status } = Astro.props;
+const langs = Object.keys(languages) as Lang[];
+const en = getErrorCopy("en", status);
+---
+
+<!--
+  Static hosts serve one error file for every path, so both languages are rendered
+  and the script below picks one from the URL (/id/... → Indonesian).
+-->
+<BaseLayout title={`${status} · ${en.title} · harke.dev`} description={en.body}>
+  <meta name="robots" content="noindex" slot="head" />
+  <div class="site-container">
+    <main class="flex flex-col">
+      <div data-enter style="--i: 0"><Identity /></div>
+      {
+        langs.map((lang) => {
+          const c = getErrorCopy(lang, status);
+          const l = errorLabels[lang];
+          return (
+            <div data-error-lang={lang} lang={lang} hidden={lang !== "en"} class="flex flex-col">
+              <p data-enter style="--i: 1" class="site-label pt-18">
+                {l.error} {status}
+              </p>
+              <h1 data-enter style="--i: 2" class="pt-5 font-medium text-foreground">
+                {c.title}
+              </h1>
+              <p data-enter style="--i: 3" class="pt-2">
+                {c.body}
+              </p>
+              <nav data-enter style="--i: 4" class="site-nav pt-8">
+                <a href={getRelativeLocaleUrl(lang)}>{l.home}</a>
+                <span class="pip" aria-hidden="true">·</span>
+                <a href={getRelativeLocaleUrl(lang, "notes")}>{l.notes}</a>
+              </nav>
+            </div>
+          );
+        })
+      }
+    </main>
+    <footer data-enter style="--i: 5" class="mt-auto flex items-center gap-4 pt-20">
+      <ThemeSwitcher />
+      <span class="h-3.5 w-px bg-pip" aria-hidden="true"></span>
+      <nav class="locale-switcher" aria-label="Language">
+        {
+          langs.map((lang, i) => (
+            <>
+              {i > 0 && <span class="pip" aria-hidden="true">/</span>}
+              <a href={getRelativeLocaleUrl(lang)} hreflang={lang} data-locale-link={lang} aria-current={lang === "en" ? "true" : undefined}>
+                {lang}
+              </a>
+            </>
+          ))
+        }
+      </nav>
+    </footer>
+  </div>
+  <span hidden data-error-title={`${status} · ${getErrorCopy("id", status).title} · harke.dev`}></span>
+  <script is:inline>
+    (() => {
+      const lang = location.pathname.split("/")[1] === "id" ? "id" : "en";
+      if (lang === "en") return;
+      document.documentElement.lang = lang;
+      document.title = document.querySelector("[data-error-title]").dataset.errorTitle;
+      document.querySelectorAll("[data-error-lang]").forEach((el) => (el.hidden = el.dataset.errorLang !== lang));
+      document.querySelectorAll("[data-locale-link]").forEach((a) => {
+        if (a.dataset.localeLink === lang) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+    })();
+  </script>
+</BaseLayout>

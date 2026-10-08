@@ -1,0 +1,70 @@
+---
+import { render } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import PageLayout from "@/layouts/PageLayout.astro";
+import Toc from "@/components/Toc.astro";
+import { formatDate, getNotes, readingTime, type Note } from "@/lib/notes";
+import { defaultLang, languages, type Lang } from "@/i18n/ui";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+export async function getStaticPaths() {
+  const notes = await getNotes();
+  return (Object.keys(languages) as Lang[]).flatMap((lang) =>
+    notes.map((note) => ({
+      params: { lang: lang === defaultLang ? undefined : lang, slug: note.id },
+      props: { note },
+    })),
+  );
+}
+
+interface Props {
+  note: Note;
+}
+
+const { note } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const { Content, headings } = await render(note);
+const minutes = readingTime(note.body);
+---
+
+<PageLayout
+  title={`${note.data.title} · harke.dev`}
+  description={note.data.description}
+  variant="article"
+  footerEnter={3}
+>
+  <a data-enter style="--i: 0" href={getRelativeLocaleUrl(lang, "notes")} class="back-link w-fit">
+    {t("notes.back")}
+  </a>
+
+  <header data-enter style="--i: 1" class="flex flex-col gap-2 pt-12">
+    <p class="flex flex-wrap items-center gap-2.5 text-[13px] leading-6 text-muted-foreground">
+      <time datetime={note.data.date.toISOString().slice(0, 10)}>{formatDate(note.data.date)}</time>
+      <span class="text-pip" aria-hidden="true">·</span>
+      <span>{t("notes.readingTime").replace("{n}", String(minutes))}</span>
+      {
+        note.data.tags.map((tag) => (
+          <>
+            <span class="text-pip" aria-hidden="true">·</span>
+            <span>{tag}</span>
+          </>
+        ))
+      }
+    </p>
+    <h1 class="text-[28px] leading-9 font-medium tracking-[-0.6px] text-foreground">
+      {note.data.title}
+    </h1>
+  </header>
+
+  <div data-enter style="--i: 2" class="relative pt-10">
+    <article id="introduction" class="prose-note">
+      <Content />
+    </article>
+    <aside class="absolute top-10 bottom-0 left-[calc(100%+64px)] hidden xl:block">
+      <div class="sticky top-10">
+        <Toc headings={headings} />
+      </div>
+    </aside>
+  </div>
+</PageLayout>

@@ -5,6 +5,7 @@ export const site = {
   socials: {
     instagram: "https://www.instagram.com/harke.dev",
     tiktok: "https://www.tiktok.com/@harke.dev",
+    threads: "https://www.threads.net/@harke.dev",
     github: "https://github.com/harke",
   },
 } as const;

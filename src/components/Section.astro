@@ -1,0 +1,16 @@
+---
+interface Props {
+  label: string;
+  enter?: number;
+  gap?: string;
+}
+
+const { label, enter = 0, gap = "gap-1.5" } = Astro.props;
+---
+
+<section data-enter style={`--i: ${enter}`} class="flex flex-col gap-5 pt-18">
+  <h2 class="site-label">{label}</h2>
+  <div class:list={["flex flex-col", gap]}>
+    <slot />
+  </div>
+</section>

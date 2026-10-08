@@ -1,0 +1,48 @@
+---
+import PageLayout from "@/layouts/PageLayout.astro";
+import Section from "@/components/Section.astro";
+import MaybeLink from "@/components/MaybeLink.astro";
+import { sideProjects, timeline } from "@/data/work";
+import { getLangFromUrl, getLangStaticPaths, useTranslations } from "@/i18n/utils";
+
+export const getStaticPaths = getLangStaticPaths;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<PageLayout title={`${t("work.title")} · harke.dev`} description={t("work.intro")} footerEnter={5}>
+  <h1 data-enter style="--i: 0" class="font-medium text-foreground">{t("work.title")}</h1>
+  <p data-enter style="--i: 1" class="pt-4">{t("work.intro")}</p>
+
+  <Section label={t("work.side")} enter={2}>
+    {
+      sideProjects.map((p) => (
+        <div class="flex">
+          <div class="w-28 shrink-0">
+            <MaybeLink href={p.href}>{p.name}</MaybeLink>
+          </div>
+          <p>{p.description[lang]}</p>
+        </div>
+      ))
+    }
+  </Section>
+
+  <Section label={t("work.timeline")} enter={3} gap="gap-6">
+    {
+      timeline.map((r) => (
+        <div class="flex">
+          <p class="site-date w-30">{r.period[lang]}</p>
+          <div class="flex flex-col">
+            <div>
+              <MaybeLink href={r.href}>{r.company}</MaybeLink>
+            </div>
+            <p class="text-sm leading-[22px]">{r.role[lang]}</p>
+          </div>
+        </div>
+      ))
+    }
+  </Section>
+
+  <p data-enter style="--i: 4" class="pt-10">{t("work.more")}</p>
+</PageLayout>
