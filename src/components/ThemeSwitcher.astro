@@ -1,0 +1,70 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const t = useTranslations(getLangFromUrl(Astro.url));
+
+const options = [
+  {
+    value: "light",
+    label: t("theme.light"),
+    icon: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>',
+  },
+  {
+    value: "dark",
+    label: t("theme.dark"),
+    icon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>',
+  },
+  {
+    value: "system",
+    label: t("theme.system"),
+    icon: '<rect width="20" height="14" x="2" y="3" rx="2"></rect><path d="M8 21h8m-4-4v4"></path>',
+  },
+] as const;
+---
+
+<div class="theme-switcher" role="group" aria-label={t("theme.label")}>
+  {
+    options.map((o) => (
+      <button type="button" data-theme-option={o.value} aria-label={o.label} aria-pressed="false">
+        <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={o.icon} />
+      </button>
+    ))
+  }
+  <div class="theme-switcher-active" aria-hidden="true">
+    {
+      options.map((o) => (
+        <span data-option={o.value}>
+          <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={o.icon} />
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<!-- Sync state before paint; the choice itself is applied by the head script in BaseLayout. -->
+<script is:inline>
+  (() => {
+    const buttons = [...document.querySelectorAll("[data-theme-option]")];
+    const indicator = document.querySelector(".theme-switcher-active");
+    const slots = [...indicator.children];
+    const sync = () => {
+      const current = window.__theme.get();
+      buttons.forEach((b, i) => {
+        const pressed = b.dataset.themeOption === current;
+        b.setAttribute("aria-pressed", String(pressed));
+        slots[i].toggleAttribute("data-active", pressed);
+        if (pressed) indicator.style.setProperty("--slot", String(i));
+      });
+    };
+    buttons.forEach((b) =>
+      b.addEventListener("click", () => {
+        window.__theme.set(b.dataset.themeOption, b);
+        indicator.setAttribute("data-changed", "");
+        sync();
+      }),
+    );
+    sync();
+    // Enable the slide only after the initial position is painted.
+    requestAnimationFrame(() => requestAnimationFrame(() => indicator.setAttribute("data-ready", "")));
+  })();
+</script>

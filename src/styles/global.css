@@ -1,0 +1,391 @@
+/*
+ * harke.dev theme (Tailwind CSS v4)
+ * Generated from the harke.dev design file (site-* variables).
+ * Dark is the brand default; `.dark` on <html> is set by the theme script in BaseLayout.
+ */
+
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ */
+/* Light                                                               */
+/* ------------------------------------------------------------------ */
+:root {
+  --radius: 0.5rem; /* 8px: code blocks, inputs. xl = 12px: TOC card */
+
+  --background: #fafaf9;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --primary: #111111;
+  --primary-foreground: #fafaf9;
+  --secondary: #efeeec;
+  --secondary-foreground: #111111;
+  --muted: #efeeec;
+  --muted-foreground: #8c8985;
+  --accent: #efeeec;
+  --accent-foreground: #111111;
+  --destructive: #dc2626;
+  --border: #e8e6e3;
+  --input: #e2e0dc;
+  --ring: #3366ff;
+
+  /* harke.dev extras */
+  --brand: #3366ff; /* the only accent: status dot, active code token */
+  --body: #4f4d4a; /* paragraph text */
+  --soft: #6f6c69; /* inactive TOC items */
+  --pip: #cfccc8; /* "·" separators, dividers in nav */
+  --underline: #a3a09c; /* link underline */
+  --border-strong: #e2e0dc; /* pills, switchers, kbd */
+
+  /* code blocks stay dark in both themes */
+  --code-bg: #0e0e0e;
+  --code-border: #1e1e1e;
+  --code-fg: #d8d8d8;
+  --code-muted: #7a7a7a;
+  --code-string: #a8a8a8;
+  --code-strong: #ffffff;
+
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------ */
+/* Dark (brand default)                                                */
+/* ------------------------------------------------------------------ */
+.dark {
+  --background: #000000;
+  --foreground: #ededed;
+  --card: #0e0e0e;
+  --card-foreground: #ededed;
+  --primary: #ededed;
+  --primary-foreground: #000000;
+  --secondary: #1c1c1c;
+  --secondary-foreground: #ededed;
+  --muted: #1c1c1c;
+  --muted-foreground: #6f6c69;
+  --accent: #1c1c1c;
+  --accent-foreground: #ededed;
+  --destructive: #ef4444;
+  --border: #1e1e1e;
+  --input: #2e2e2e;
+  --ring: #3366ff;
+
+  --brand: #3366ff;
+  --body: #b8b5b2;
+  --soft: #8a8885;
+  --pip: #3b3937;
+  --underline: #8a8a8a;
+  --border-strong: #2e2e2e;
+
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion tokens (Emil Kowalski's curves)                              */
+/* ------------------------------------------------------------------ */
+@theme {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entering / exiting */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* moving on screen */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* softer settle: status ping */
+  --default-transition-timing-function: ease; /* hover / color changes */
+}
+
+/* ------------------------------------------------------------------ */
+/* Tailwind tokens                                                     */
+/* ------------------------------------------------------------------ */
+@theme inline {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* harke.dev extras → bg-brand, text-body, text-soft, text-pip, decoration-underline … */
+  --color-brand: var(--brand);
+  --color-body: var(--body);
+  --color-soft: var(--soft);
+  --color-pip: var(--pip);
+  --color-underline: var(--underline);
+  --color-border-strong: var(--border-strong);
+  --color-code: var(--code-bg);
+  --color-code-border: var(--code-border);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply antialiased;
+  }
+  body {
+    @apply bg-background text-body font-sans text-base leading-7;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--brand) 30%, transparent);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Site patterns (from the design)                                     */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* 544px reading column; 112/24/40 on mobile, 160/48 on desktop */
+  .site-container {
+    @apply mx-auto flex min-h-dvh w-full max-w-[40rem] flex-col px-6 pt-28 pb-10 sm:px-12 sm:pt-40 sm:pb-12;
+  }
+
+  /* underlined text link: 1px line at the bottom of a 21px line box (hover wipe in Motion) */
+  .site-link {
+    @apply relative inline-block leading-[21px] text-foreground;
+  }
+  .site-link::before {
+    content: "";
+    @apply absolute inset-x-0 bottom-0 h-px bg-underline;
+  }
+
+  /* footer / home nav: notes · work · about · email */
+  .site-nav {
+    @apply flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] leading-6 text-muted-foreground;
+  }
+  .site-nav a {
+    @apply relative inline-block transition-colors hover:text-foreground;
+  }
+  .site-nav .pip {
+    @apply text-pip;
+  }
+
+  /* "open for freelance" status pill */
+  .status-pill {
+    @apply relative inline-flex w-fit items-center gap-2 rounded-full border border-border-strong bg-card py-1 pr-3 pl-2.5 text-sm text-foreground;
+  }
+  .status-pill::before {
+    content: "";
+    @apply size-1.5 rounded-full bg-brand;
+  }
+  /* ping ring, centered on the dot (pl-2.5 = 10px) */
+  .status-pill::after {
+    content: "";
+    @apply absolute top-1/2 left-2.5 -mt-[3px] size-1.5 rounded-full bg-brand opacity-0;
+  }
+
+  /*
+   * theme switcher (light / dark / system)
+   * The active state is a styled copy of the row, clipped to the active slot, so
+   * background and icon color move together (tab-indicator-by-clip-path recipe).
+   */
+  .theme-switcher {
+    @apply relative inline-flex items-center gap-0.5 rounded-full border border-border-strong p-[3px];
+  }
+  .theme-switcher button {
+    @apply grid size-[26px] cursor-pointer place-items-center rounded-full text-muted-foreground transition-[color,scale] hover:text-foreground active:scale-95;
+    transition-duration: 150ms, 160ms;
+    transition-timing-function: ease, var(--ease-out);
+  }
+  .theme-switcher-active {
+    @apply pointer-events-none absolute inset-[3px] flex items-center gap-0.5 rounded-full bg-secondary text-foreground;
+    /* 26px slot + 2px gap; --slot is set on this element by the switcher script */
+    clip-path: inset(0 calc((2 - var(--slot, 1)) * 28px) 0 calc(var(--slot, 1) * 28px) round 999px);
+  }
+  .theme-switcher-active[data-ready] {
+    transition: clip-path 250ms var(--ease-in-out);
+  }
+  .theme-switcher-active > span {
+    @apply grid size-[26px] place-items-center;
+  }
+
+  /* locale switcher (en / id) */
+  .locale-switcher {
+    @apply inline-flex items-center gap-1.5 text-[13px] leading-6 text-muted-foreground;
+  }
+  .locale-switcher a {
+    @apply relative inline-block transition-colors hover:text-foreground;
+  }
+  .locale-switcher [aria-current="true"] {
+    @apply text-foreground;
+  }
+  .locale-switcher .pip {
+    @apply text-pip;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /*
+   * Page entrance: short stagger, set the order with style="--i: n".
+   * CSS animation (not JS) so it stays smooth while the page is still loading.
+   */
+  [data-enter] {
+    animation: enter 300ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 50ms);
+  }
+
+  /*
+   * Link hover: a foreground line wipes in from the left, and leaves to the right
+   * faster than it came (exit 180ms < enter 250ms).
+   */
+  .site-link::after,
+  .site-nav a::after,
+  .locale-switcher a::after {
+    content: "";
+    @apply absolute inset-x-0 bottom-0 h-px bg-foreground;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 180ms var(--ease-out);
+  }
+  .site-nav a::after,
+  .locale-switcher a::after {
+    @apply bottom-1;
+  }
+  .locale-switcher a[aria-current="true"]::after {
+    content: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .site-link:hover::after,
+    .site-nav a:hover::after,
+    .locale-switcher a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+      transition-duration: 250ms;
+    }
+  }
+  .site-link:focus-visible::after,
+  .site-nav a:focus-visible::after,
+  .locale-switcher a:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* "open for freelance": a ring pings out of the dot, then rests before the next one */
+  .status-pill::after {
+    animation: status-ping 2.4s var(--ease-drawer) 800ms infinite;
+  }
+
+  /* Theme switcher: the newly chosen icon settles into place (only after a click) */
+  .theme-switcher-active[data-changed] > span[data-active] svg {
+    animation: 300ms var(--ease-out) both;
+  }
+  .theme-switcher-active[data-changed] > span[data-option="light"][data-active] svg {
+    animation-name: icon-sun;
+  }
+  .theme-switcher-active[data-changed] > span[data-option="dark"][data-active] svg {
+    animation-name: icon-moon;
+  }
+  .theme-switcher-active[data-changed] > span[data-option="system"][data-active] svg {
+    animation-name: icon-system;
+  }
+
+  /*
+   * Theme change: the new theme is revealed as a circle growing from the clicked
+   * button (clip-path driven by the theme script). Reduced motion keeps the
+   * browser's default crossfade.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-enter] {
+      animation-name: enter-fade;
+    }
+    /* keep the hover cue, drop the movement */
+    .site-link::after,
+    .site-nav a::after,
+    .locale-switcher a::after {
+      transform: scaleX(1);
+      opacity: 0;
+      transition: opacity 150ms ease;
+    }
+    .site-link:hover::after,
+    .site-nav a:hover::after,
+    .locale-switcher a:hover::after,
+    .site-link:focus-visible::after,
+    .site-nav a:focus-visible::after,
+    .locale-switcher a:focus-visible::after {
+      opacity: 1;
+    }
+    .status-pill::after,
+    .theme-switcher-active[data-changed] > span[data-active] svg {
+      animation: none;
+    }
+    .theme-switcher-active[data-ready] {
+      transition: none;
+    }
+    .theme-switcher button {
+      @apply active:scale-100;
+    }
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes status-ping {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
+@keyframes icon-sun {
+  from {
+    transform: rotate(-90deg) scale(0.7);
+  }
+}
+
+@keyframes icon-moon {
+  from {
+    transform: rotate(45deg) scale(0.8);
+  }
+}
+
+@keyframes icon-system {
+  from {
+    transform: translateY(3px) scale(0.85);
+  }
+}

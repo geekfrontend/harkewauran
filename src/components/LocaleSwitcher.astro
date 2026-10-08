@@ -1,0 +1,26 @@
+---
+import { languages, type Lang } from "@/i18n/ui";
+import { getLangFromUrl, localizePath, useTranslations } from "@/i18n/utils";
+
+const current = getLangFromUrl(Astro.url);
+const t = useTranslations(current);
+---
+
+<nav aria-label={t("locale.label")} class="locale-switcher">
+  {
+    (Object.keys(languages) as Lang[]).map((lang, i) => (
+      <>
+        {i > 0 && <span class="pip" aria-hidden="true">/</span>}
+        <a
+          href={localizePath(Astro.url, lang)}
+          hreflang={lang}
+          lang={lang}
+          title={languages[lang]}
+          aria-current={lang === current ? "true" : undefined}
+        >
+          {lang}
+        </a>
+      </>
+    ))
+  }
+</nav>

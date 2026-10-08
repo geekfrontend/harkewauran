@@ -1,0 +1,45 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Identity from "@/components/Identity.astro";
+import SiteNav from "@/components/SiteNav.astro";
+import Preferences from "@/components/Preferences.astro";
+import { site } from "@/config/site";
+import { getLangFromUrl, getLangStaticPaths, useTranslations } from "@/i18n/utils";
+
+export const getStaticPaths = getLangStaticPaths;
+
+const t = useTranslations(getLangFromUrl(Astro.url));
+---
+
+<BaseLayout>
+  <div class="site-container">
+    <main class="flex flex-col">
+      <h1 data-enter style="--i: 0"><Identity /></h1>
+
+      <div class="flex flex-col gap-3 pt-4">
+        <div data-enter style="--i: 1" class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-1">
+          <p>
+            {t("home.role")}<span class="sm:hidden">.</span><span class="hidden sm:inline"> —</span>
+          </p>
+          <span class="status-pill">{t("home.status")}</span>
+        </div>
+        <p data-enter style="--i: 2">{t("home.intro")}</p>
+        <p data-enter style="--i: 3">
+          {t("home.follow")}{" "}
+          <a class="site-link" href={site.socials.instagram} rel="me">instagram</a>,{" "}
+          <a class="site-link" href={site.socials.tiktok} rel="me">tiktok</a>{" "}
+          {t("home.and")}{" "}
+          <a class="site-link" href={site.socials.github} rel="me">github</a>.
+        </p>
+      </div>
+
+      <div data-enter style="--i: 4" class="pt-8">
+        <SiteNav />
+      </div>
+    </main>
+
+    <footer data-enter style="--i: 5" class="mt-auto pt-16">
+      <Preferences />
+    </footer>
+  </div>
+</BaseLayout>

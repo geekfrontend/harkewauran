@@ -1,0 +1,26 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { site } from "@/config/site";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const items = [
+  { label: t("nav.notes"), href: getRelativeLocaleUrl(lang, "notes") },
+  { label: t("nav.work"), href: getRelativeLocaleUrl(lang, "work") },
+  { label: t("nav.about"), href: getRelativeLocaleUrl(lang, "about") },
+  { label: t("nav.email"), href: `mailto:${site.email}` },
+];
+---
+
+<nav aria-label={t("nav.label")} class="site-nav">
+  {
+    items.map((item, i) => (
+      <>
+        {i > 0 && <span class="pip" aria-hidden="true">·</span>}
+        <a href={item.href}>{item.label}</a>
+      </>
+    ))
+  }
+</nav>

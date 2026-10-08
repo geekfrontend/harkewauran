@@ -1,0 +1,21 @@
+---
+import { site } from "@/config/site";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getLangFromUrl } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+<a href={getRelativeLocaleUrl(lang)} class="flex w-fit items-center gap-2.5">
+  <span
+    class="grid size-7 place-items-center rounded-full border border-border-strong bg-secondary text-foreground"
+    aria-hidden="true"
+  >
+    <svg viewBox="-20 0 240 240" class="size-4" fill="currentColor">
+      <path
+        d="M0 220V20A20 20 0 0 1 20 0H44A20 20 0 0 1 64 20V64A20 20 0 0 0 84 84H116A20 20 0 0 0 136 64V20A20 20 0 0 1 156 0H180A20 20 0 0 1 200 20V220A20 20 0 0 1 180 240H156A20 20 0 0 1 136 220V168A20 20 0 0 0 116 148H84A20 20 0 0 0 64 168V220A20 20 0 0 1 44 240H20A20 20 0 0 1 0 220Z"
+      ></path>
+    </svg>
+  </span>
+  <span class="font-medium text-foreground">{site.name}</span>
+</a>
